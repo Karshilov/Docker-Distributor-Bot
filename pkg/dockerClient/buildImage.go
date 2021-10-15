@@ -22,7 +22,10 @@ func BuildImage(hostId uint) /* types.ImageBuildResponse */ {
 	)
 	go tunnel.Start()
 	time.Sleep(time.Millisecond * 100)
-	cli, err := client.NewClientWithOpts(client.WithHost("tcp://127.0.0.1:" + strconv.Itoa(tunnel.Local.Port)))
+	cli, err := client.NewClientWithOpts(
+		client.WithHost("tcp://127.0.0.1:"+strconv.Itoa(tunnel.Local.Port)),
+		client.WithAPIVersionNegotiation(),
+	)
 	if err != nil {
 		panic(err)
 	}
