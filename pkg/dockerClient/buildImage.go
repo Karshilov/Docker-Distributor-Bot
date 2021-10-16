@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -20,8 +19,9 @@ func BuildImage(hostId uint) /* types.ImageBuildResponse */ {
 		sshTunnel.PrivateKeyFile(cfg[hostId].Key),
 		"/var/run/docker.sock",
 	)
-	go tunnel.Start()
-	time.Sleep(time.Millisecond * 100)
+	ch := make(chan bool)
+	go tunnel.Start(ch)
+	<-ch
 	cli, err := client.NewClientWithOpts(
 		client.WithHost("tcp://127.0.0.1:"+strconv.Itoa(tunnel.Local.Port)),
 		client.WithAPIVersionNegotiation(),

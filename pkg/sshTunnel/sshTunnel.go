@@ -52,12 +52,13 @@ func (tunnel *SSHTunnel) logf(fmt string, args ...interface{}) {
 	}
 }
 
-func (tunnel *SSHTunnel) Start() error {
+func (tunnel *SSHTunnel) Start(ch chan<- bool) error {
 	listener, err := net.Listen("tcp", tunnel.Local.String())
 	if err != nil {
 		return err
 	}
 	defer listener.Close()
+	close(ch)
 	tunnel.Local.Port = listener.Addr().(*net.TCPAddr).Port
 	for {
 		conn, err := listener.Accept()
