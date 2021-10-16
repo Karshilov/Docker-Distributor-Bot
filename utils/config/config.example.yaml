@@ -1,0 +1,4 @@
+list:
+    - host: 1.14.5.14
+      user: tadokoro
+      privateKey: '/path/to/your/key'
