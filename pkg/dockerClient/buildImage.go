@@ -3,17 +3,19 @@ package dockerClient
 import (
 	"Docker-Distributor-Bot/pkg/sshTunnel"
 	"Docker-Distributor-Bot/utils/config"
+	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"strconv"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
 
-func BuildImage(hostId uint) /* types.ImageBuildResponse */ {
+func BuildImage(hostId uint, tar io.ReadCloser) /* types.ImageBuildResponse */ {
 	cfg := config.GetConfig()
-	fmt.Printf("%s\n", cfg[hostId].User+"@"+cfg[hostId].Host)
 	tunnel := sshTunnel.NewSSHTunnel(
 		cfg[hostId].User+"@"+cfg[hostId].Host,
 		sshTunnel.PrivateKeyFile(cfg[hostId].Key),
@@ -29,11 +31,24 @@ func BuildImage(hostId uint) /* types.ImageBuildResponse */ {
 	if err != nil {
 		panic(err)
 	}
-	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
 		panic(err)
 	}
-	for _, container := range containers {
-		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+	opts := types.ImageBuildOptions{
+		Dockerfile: "Dockerfile",
+		Tags:       []string{"nvidia-cuda"},
+		Remove:     true,
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*120)
+	defer cancel()
+	res, err := cli.ImageBuild(ctx, tar, opts)
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+	scanner := bufio.NewScanner(res.Body)
+	for scanner.Scan() {
+		lastLine := scanner.Text()
+		fmt.Println(lastLine)
 	}
 }
