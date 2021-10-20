@@ -12,5 +12,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	dockerClient.BuildImage(0, tar)
+	err = dockerClient.BuildImage(0, tar)
+	if err != nil {
+		panic(err)
+	}
 }
