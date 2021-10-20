@@ -25,11 +25,12 @@ func prepare() error {
 	table = `
 		CREATE TABLE IF NOT EXISTS container (
 			id VARCHAR(255) NOT NULL,
+			cid INTEGER NOT NULL,
 			name VARCHAR(255) NOT NULL,
 			port VARCHAR(255) NOT NULL,
-			serverID VARCHAR(255) NOT NULL,
+			hostID VARCHAR(255) NOT NULL,
 			initialPasswd VARCHAR(255) NOT NULL,
-			userID VARCHAR(255) NOT NULL
+			userID INTEGER NOT NULL
 		);
 	`
 	_, err = db.Exec(table)
