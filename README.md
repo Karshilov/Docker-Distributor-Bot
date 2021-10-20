@@ -11,4 +11,4 @@ use QQ-Bot to distribute docker containers
 + [ ] listen the dialog in QQ group and react to keywords
 
 ### Known Bugs
-+ [ ] tar can't work on windows, maybe caused by '\' in path
++ [ ] tar can't work on windows, maybe caused by '\\' in path
