@@ -6,13 +6,13 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func getLatestContainerId(hostId uint, qqnum int64) (int, error) {
+func GetLatestContainerId(hostId uint, qqnum int64) (int, error) {
 	db, err := sql.Open("sqlite3", "./dockerInfo.db")
 	if err != nil {
 		return 0, err
 	}
 	defer db.Close()
-	rows, err := db.Query("SELECT cid FROM container WHERE hostID = ? AND userID = ?")
+	rows, err := db.Query("SELECT cid FROM container WHERE hostID = ? AND userID = ?", hostId, qqnum)
 	if err != nil {
 		return 0, err
 	}
