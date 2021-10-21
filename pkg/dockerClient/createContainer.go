@@ -76,5 +76,6 @@ func CreateContainer(hostId uint, pubKey string, qqnum int64) error {
 	if err != nil {
 		return err
 	}
+	println(res.ID, passwd, port)
 	return nil
 }
