@@ -7,13 +7,13 @@ import (
 )
 
 type ContainerInfo struct {
-	id            string
-	cid           int
-	userID        int64
-	hostID        string
-	name          string
-	port          string
-	initialPasswd string
+	Id            string
+	Cid           int
+	UserID        int64
+	HostID        string
+	Name          string
+	Port          string
+	InitialPasswd string
 }
 
 func GetLatestContainerId(hostId uint, qqnum int64) (int, error) {
@@ -56,13 +56,13 @@ func UpdateLatestContainer(c ContainerInfo) error {
 		return err
 	}
 	_, err = prep.Exec(
-		c.id,
-		c.cid,
-		c.name,
-		c.port,
-		c.hostID,
-		c.initialPasswd,
-		c.userID,
+		c.Id,
+		c.Cid,
+		c.Name,
+		c.Port,
+		c.HostID,
+		c.InitialPasswd,
+		c.UserID,
 	)
 	if err != nil {
 		return err

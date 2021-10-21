@@ -3,7 +3,7 @@ package simpledb
 import "testing"
 
 func TestPrepare(t *testing.T) {
-	if prepare() != nil {
+	if Prepare() != nil {
 		t.Fatal("prepare() failed")
 	}
 }

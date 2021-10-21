@@ -1,6 +1,7 @@
 package dockerClient
 
 import (
+	"Docker-Distributor-Bot/pkg/simpledb"
 	"Docker-Distributor-Bot/utils/config"
 	"Docker-Distributor-Bot/utils/random"
 	"context"
@@ -26,7 +27,7 @@ func GetAvailablePort(host string) (int, error) {
 	return listener.Addr().(*net.TCPAddr).Port, nil
 }
 
-func createContainer(hostId uint, pubKey string, qqnum int64) error {
+func CreateContainer(hostId uint, pubKey string, qqnum int64) error {
 	cli, err := getDockerClient(hostId)
 	hostInfo := config.GetConfig()[hostId]
 	if err != nil {
@@ -45,14 +46,35 @@ func createContainer(hostId uint, pubKey string, qqnum int64) error {
 			"AUTHORIZED_KEYS=" + pubKey,
 		},
 	}
+	curID, err := simpledb.GetLatestContainerId(hostId, qqnum)
+	if err != nil {
+		return err
+	}
+	containerName := fmt.Sprintf("%d-%d", qqnum, curID+1)
 	hostCfg := &container.HostConfig{
 		PortBindings: nat.PortMap{
-			"2222/tcp": []nat.PortBinding{nat.PortBinding{
+			"2222/tcp": []nat.PortBinding{{
 				HostIP:   hostInfo.Host,
 				HostPort: strconv.Itoa(port),
 			}},
 		},
-		Binds: []string{fmt.Sprintf("/var/%d-%d/persist-data", qqnum, 0)},
+		Binds: []string{fmt.Sprintf("/var/%s/persist-data", containerName)},
+	}
+	res, err := cli.ContainerCreate(ctx, cfg, hostCfg, nil, nil, containerName)
+	if err != nil {
+		return err
+	}
+	err = simpledb.UpdateLatestContainer(simpledb.ContainerInfo{
+		Id:            res.ID,
+		Cid:           curID + 1,
+		Name:          containerName,
+		Port:          strconv.Itoa(port),
+		HostID:        strconv.Itoa(int(hostId)),
+		InitialPasswd: passwd,
+		UserID:        qqnum,
+	})
+	if err != nil {
+		return err
 	}
 	return nil
 }

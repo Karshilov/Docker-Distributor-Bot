@@ -6,7 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func prepare() error {
+func Prepare() error {
 	db, err := sql.Open("sqlite3", "./dockerInfo.db")
 	if err != nil {
 		return err

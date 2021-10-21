@@ -18,7 +18,6 @@ func BuildImage(hostId uint, tar io.ReadCloser) error {
 	opts := types.ImageBuildOptions{
 		Dockerfile: "Dockerfile",
 		Tags:       []string{"nvidia-cuda"},
-		Remove:     true,
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*120)
 	defer cancel()
