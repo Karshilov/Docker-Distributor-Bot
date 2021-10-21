@@ -7,7 +7,6 @@ require (
 	github.com/docker/docker v20.10.9+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/mattn/go-sqlite3 v1.14.9
-	github.com/moby/sys/mount v0.2.0 // indirect
 	github.com/morikuni/aec v1.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	gopkg.in/yaml.v2 v2.4.0

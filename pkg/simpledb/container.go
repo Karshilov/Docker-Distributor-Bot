@@ -2,6 +2,7 @@ package simpledb
 
 import (
 	"database/sql"
+	"errors"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -66,6 +67,26 @@ func UpdateLatestContainer(c ContainerInfo) error {
 	)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func DeleteContainer(containerID string, qqnum int64) error {
+	db, err := sql.Open("sqlite3", "./dockerInfo.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	rows, err := db.Query("SELECT userID FROM container WHERE id = ?", containerID)
+	if err != nil {
+		return err
+	}
+	if rows.Next() {
+		var userID int64
+		err = rows.Scan(&userID)
+		if userID != qqnum {
+			return errors.New("You are not the owner!")
+		}
 	}
 	return nil
 }
