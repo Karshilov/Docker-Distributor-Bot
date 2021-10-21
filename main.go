@@ -2,18 +2,15 @@ package main
 
 import (
 	"Docker-Distributor-Bot/pkg/dockerClient"
-	"path"
-
-	"github.com/docker/docker/pkg/archive"
+	"Docker-Distributor-Bot/pkg/simpledb"
+	"fmt"
 )
 
 func main() {
-	tar, err := archive.TarWithOptions(path.Join("utils/nvidia-cuda"), &archive.TarOptions{})
-	if err != nil {
+	if err := simpledb.Prepare(); err != nil {
 		panic(err)
 	}
-	err = dockerClient.BuildImage(0, tar)
-	if err != nil {
-		panic(err)
+	if err := dockerClient.CreateContainer(1, "", 3142534138); err != nil {
+		println(fmt.Sprintf("created failed %v", err))
 	}
 }

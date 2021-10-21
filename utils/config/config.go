@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 
 	"gopkg.in/yaml.v2"
 )
@@ -21,7 +22,7 @@ type HostList struct {
 func GetConfig() []SingleHost {
 	config := HostList{}
 	pwd, _ := os.Getwd()
-	cfg, err := ioutil.ReadFile(pwd + `/utils/config/config.yaml`)
+	cfg, err := ioutil.ReadFile(path.Join(pwd, `/utils/config/config.yaml`))
 	if err != nil {
 		log.Fatalf("io error: %v", err)
 	}
