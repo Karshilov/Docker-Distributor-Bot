@@ -71,7 +71,7 @@ func UpdateLatestContainer(c ContainerInfo) error {
 	return nil
 }
 
-func DeleteContainer(containerID string, qqnum int64) error {
+func CheckOwner(containerID string, qqnum int64) error {
 	db, err := sql.Open("sqlite3", "./dockerInfo.db")
 	if err != nil {
 		return err
@@ -84,9 +84,30 @@ func DeleteContainer(containerID string, qqnum int64) error {
 	if rows.Next() {
 		var userID int64
 		err = rows.Scan(&userID)
-		if userID != qqnum {
-			return errors.New("You are not the owner!")
+		if err != nil {
+			return err
 		}
+		if userID != qqnum {
+			return errors.New("you are not the owner")
+		}
+	}
+	return nil
+}
+
+func DeleteContainer(containerID string, qqnum int64) error {
+	db, err := sql.Open("sqlite3", "./dockerInfo.db")
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+	prep, err := db.Prepare("DELETE FROM container WHERE id = ?")
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = prep.Exec(containerID)
+	if err != nil {
+		panic(err)
 	}
 	return nil
 }
