@@ -4,7 +4,7 @@ use QQ-Bot to distribute docker containers
 ### Features
 + [x] use ssh to control docker daemon on remote servers
 + [x] build docker image by custom Dockerfile
-+ [ ] create/delete containers
++ [x] create/delete containers
   + mount volumns
   + enable password login
 + [ ] monitor system state (CPU / GPU / Memory ...)
